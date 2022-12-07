@@ -1,6 +1,6 @@
 export const colors = {
-	ebonyClay: '#26283B',
-	mirage: '#161928',
+	ebonyClay: '#232A34',
+	mirage: '#181E27',
 	veryDarkblue: '#131518',
 	darkBlue: '#262e38',
 	orange: '#fc7614',
@@ -9,9 +9,22 @@ export const colors = {
 }
 
 export const size = {
-	mobile: 412
+	tablet: '412px'
 }
 
 export const device = {
-	mobile: `(min-width: ${size.mobile}px)`
+	tablet: `@media(min-width: ${size.tablet})`
 }
+
+export const visuallyHidden = `
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	border: 0;
+	padding: 0;
+	white-space: nowrap;
+	clip-path: inset(100%);
+	clip: rect(0 0 0 0);
+	overflow: hidden;
+`
