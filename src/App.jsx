@@ -2,19 +2,24 @@ import styled from 'styled-components'
 import './style/mixin'
 import { colors, device } from './style/variable.jsx'
 import { webfont } from './include/webfont.js'
-import { useEffect } from 'react'
+import { lazy, useEffect, useState } from 'react'
 import Rate from './components/Rate.jsx'
-
+const Thanks = lazy(() => import('./components/Thanks.jsx'))
 function App() {
 	useEffect(() => {
 		webfont()
 	})
 	const rates = [1, 2, 3, 4, 5]
+	const [isSubmitted, setIsSubmitted] = useState(false)
 	return (
 		<SContainer>
 			<SMain>
 				<SCard>
-					<Rate rates={rates} />
+					{isSubmitted ? (
+						<Thanks />
+					) : (
+						<Rate rates={rates} setIsSubmitted={setIsSubmitted} />
+					)}
 				</SCard>
 			</SMain>
 		</SContainer>
