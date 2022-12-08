@@ -11,14 +11,20 @@ function App() {
 	})
 	const rates = [1, 2, 3, 4, 5]
 	const [isSubmitted, setIsSubmitted] = useState(false)
+	const [value, setValue] = useState(null)
 	return (
 		<SContainer>
 			<SMain>
 				<SCard>
 					{isSubmitted ? (
-						<Thanks />
+						<Thanks value={value} />
 					) : (
-						<Rate rates={rates} setIsSubmitted={setIsSubmitted} />
+						<Rate
+							rates={rates}
+							setIsSubmitted={setIsSubmitted}
+							value={value}
+							setValue={setValue}
+						/>
 					)}
 				</SCard>
 			</SMain>
@@ -27,7 +33,6 @@ function App() {
 }
 const SContainer = styled.div`
 	height: 100dvh;
-	background-color: ${colors.veryDarkblue};
 	display: grid;
 	place-items: center;
 	place-content: center;
