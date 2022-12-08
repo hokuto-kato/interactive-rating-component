@@ -1,8 +1,45 @@
 import styled from 'styled-components'
 import { colors, device, visuallyHidden } from '../style/variable.jsx'
 import { rem } from '../style/mixin.jsx'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 
-export const Rate = ({ rates }) => {
+export const Rate = ({ rates, setIsSubmitted }) => {
+	useEffect(() => {})
+	const [isValid, setIsValid] = useState(false)
+	const [isLoading, setIsLoading] = useState(false)
+	const [isError, setIsError] = useState(false)
+	const [errorMessage, setErrorMessage] = useState('')
+	const [value, setValue] = useState({})
+
+	const handleSubmit = () => {
+		if (isValid) {
+			setIsLoading(true)
+			axios
+				.post('https://jsonplaceholder.typicode.com/posts', value)
+				.then((res) => {
+					setIsLoading(false)
+					setIsSubmitted(true)
+				})
+				.catch((err) => {
+					console.log(err.message)
+					setErrorMessage(`${err.message}.`)
+					setIsError(true)
+				})
+				.finally(() => {
+					setIsLoading(false)
+				})
+		} else {
+			setErrorMessage("You haven't rated yet.")
+			setIsError(true)
+		}
+	}
+	const handleRadio = (e) => {
+		setIsValid(true)
+		setIsError(false)
+		const id = Math.floor(Math.random() * 1e3)
+		setValue((prev) => ({ ...prev, [e.target.name]: e.target.value, id }))
+	}
 	return (
 		<>
 			<SStar>
@@ -13,26 +50,26 @@ export const Rate = ({ rates }) => {
 				Please let us know how we did with your support request. All
 				feedback is appreciated to help us improve our offering!
 			</SCardBody>
-			<form action="#">
-				<SRateList>
-					{rates.map((rate) => (
-						<li key={rate}>
-							<SRateInput
-								id={`rate${rate}`}
-								type="radio"
-								name="rate"
-								value={rate}
-							/>
-							<SRateLabel htmlFor={`rate${rate}`}>
-								<SRateBody>{rate}</SRateBody>
-							</SRateLabel>
-						</li>
-					))}
-				</SRateList>
-				<SButton>
-					<SButtonBody>SUBMIT</SButtonBody>
-				</SButton>
-			</form>
+			<SRateList>
+				{rates.map((rate) => (
+					<li key={rate}>
+						<SRateInput
+							id={`rate${rate}`}
+							type="radio"
+							name="rate"
+							value={rate}
+							onChange={handleRadio}
+						/>
+						<SRateLabel htmlFor={`rate${rate}`}>
+							<SRateBody>{rate}</SRateBody>
+						</SRateLabel>
+					</li>
+				))}
+			</SRateList>
+			{isError && <SError>{errorMessage}</SError>}
+			<SButton onClick={handleSubmit}>
+				<SButtonBody>SUBMIT</SButtonBody>
+			</SButton>
 		</>
 	)
 }
@@ -144,6 +181,15 @@ const SButtonBody = styled.span`
 	transform: translateY(0.1rem);
 	${device.tablet} {
 		font-size: ${rem(15)};
+	}
+`
+const SError = styled.p`
+	color: red;
+	margin-top: 30px;
+	text-align: center;
+	font-size: ${rem(14)};
+	${device.tablet} {
+		font-size: ${rem(16)};
 	}
 `
 export default Rate
