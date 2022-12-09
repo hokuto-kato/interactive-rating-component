@@ -54,7 +54,7 @@ const SCard = styled.div`
 	max-width: 412px;
 	${device.tablet} {
 		border-radius: 30px;
-		padding: 32px;
+		padding: 30px;
 	}
 `
 export default App
