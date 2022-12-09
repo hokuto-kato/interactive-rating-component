@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/babel-plugin": "^11.10.5",
+    "@emotion/react": "^11.10.5",
     "@squoosh/lib": "^0.4.0",
     "autoprefixer": "^10.4.13",
     "axios": "^1.2.1",

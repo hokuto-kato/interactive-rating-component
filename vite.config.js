@@ -36,5 +36,13 @@ export default {
 			}
 		}
 	},
-	plugins: [react(), squoosh()]
+	plugins: [
+		react({
+			jsxImportSource: '@emotion/react',
+			babel: {
+				plugins: ['@emotion/babel-plugin']
+			}
+		}),
+		squoosh()
+	]
 }
