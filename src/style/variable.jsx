@@ -5,7 +5,8 @@ export const colors = {
 	darkBlue: '#262e38',
 	orange: '#fc7614',
 	pureWhite: '#ffffff',
-	lightGrey: '#969fad'
+	lightGrey: '#969fad',
+	burntSienna: '#EB5757'
 }
 
 export const size = {
