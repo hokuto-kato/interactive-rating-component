@@ -1,78 +1,105 @@
 import { colors, device, visuallyHidden } from '../style/variable.jsx'
 import { rem } from '../style/mixin.jsx'
-import { useEffect, useState } from 'react'
+import { forwardRef, useEffect, useRef, useState } from 'react'
 import { css } from '@emotion/react'
 import axios from 'axios'
+import { CSSTransition } from 'react-transition-group'
 
-export const Rate = ({ rates, setIsSubmitted, value, setValue }) => {
-	useEffect(() => {})
-	const [isValid, setIsValid] = useState(false)
-	const [isLoading, setIsLoading] = useState(false)
-	const [isError, setIsError] = useState(false)
-	const [errorMessage, setErrorMessage] = useState('')
+export const Rate = forwardRef(
+	({ rates, setIsSubmitted, value, setValue }, ref) => {
+		useEffect(() => {})
+		const [isValid, setIsValid] = useState(false)
+		const [isLoading, setIsLoading] = useState(false)
+		const [isError, setIsError] = useState(false)
+		const [errorMessage, setErrorMessage] = useState('')
+		const errorNode = useRef(null)
 
-	const handleSubmit = () => {
-		if (isValid) {
-			setIsLoading(true)
-			axios
-				.post('https://jsonplaceholder.typicode.com/posts', value)
-				.then(() => {
-					setIsLoading(false)
-					setIsSubmitted(true)
-				})
-				.catch((err) => {
-					console.log(err.message)
-					setErrorMessage(`${err.message}.`)
-					setIsError(true)
-				})
-				.finally(() => {
-					setIsLoading(false)
-				})
-		} else {
-			setErrorMessage("You haven't rated yet.")
-			setIsError(true)
+		const handleSubmit = () => {
+			if (isValid) {
+				setIsLoading(true)
+				axios
+					.post('https://jsonplaceholder.typicode.com/posts', value)
+					.then(() => {
+						setIsLoading(false)
+						setIsSubmitted(true)
+					})
+					.catch((err) => {
+						console.log(err.message)
+						setErrorMessage(`${err.message}.`)
+						setIsError(true)
+					})
+					.finally(() => {
+						setIsLoading(false)
+					})
+			} else {
+				setErrorMessage("You haven't rated yet.")
+				setIsError(true)
+			}
 		}
+		const handleRadio = (e) => {
+			setIsValid(true)
+			setIsError(false)
+			const id = Math.floor(Math.random() * 1e3)
+			setValue((prev) => ({
+				...prev,
+				[e.target.name]: e.target.value,
+				id
+			}))
+		}
+		return (
+			<section css={fade} ref={ref}>
+				<figure css={starWrap}>
+					<span css={starBody} role="img" aria-label="star"></span>
+				</figure>
+				<h1 css={heading}>How did we do?</h1>
+				<p css={body}>
+					Please let us know how we did with your support request. All
+					feedback is appreciated to help us improve our offering!
+				</p>
+				<ul css={list}>
+					{rates.map((rate) => (
+						<li key={rate}>
+							<input
+								css={input}
+								id={`rate${rate}`}
+								type="radio"
+								name="rate"
+								value={rate}
+								onChange={handleRadio}
+							/>
+							<label css={label} htmlFor={`rate${rate}`}>
+								<span css={rateBody}>{rate}</span>
+							</label>
+						</li>
+					))}
+				</ul>
+				<CSSTransition
+					nodeRef={errorNode}
+					timeout={200}
+					in={isError}
+					classNames="error"
+					unmountOnExit
+				>
+					<p css={error} ref={errorNode}>
+						{errorMessage}
+					</p>
+				</CSSTransition>
+				<button css={isValid ? activeBtn : btn} onClick={handleSubmit}>
+					<span css={btnBody}>SUBMIT</span>
+				</button>
+			</section>
+		)
 	}
-	const handleRadio = (e) => {
-		setIsValid(true)
-		setIsError(false)
-		const id = Math.floor(Math.random() * 1e3)
-		setValue((prev) => ({ ...prev, [e.target.name]: e.target.value, id }))
+)
+const fade = css`
+	&.fade-exit {
+		opacity: 1;
 	}
-	return (
-		<section>
-			<figure css={starWrap}>
-				<span css={starBody} role="img" aria-label="star"></span>
-			</figure>
-			<h1 css={heading}>How did we do?</h1>
-			<p css={body}>
-				Please let us know how we did with your support request. All
-				feedback is appreciated to help us improve our offering!
-			</p>
-			<ul css={list}>
-				{rates.map((rate) => (
-					<li key={rate}>
-						<input
-							css={input}
-							id={`rate${rate}`}
-							type="radio"
-							name="rate"
-							value={rate}
-							onChange={handleRadio}
-						/>
-						<label css={label} htmlFor={`rate${rate}`}>
-							<span css={rateBody}>{rate}</span>
-						</label>
-					</li>
-				))}
-			</ul>
-			{isError && <p css={error}>{errorMessage}</p>}
-			<button css={btn} onClick={handleSubmit}>
-				<span css={btnBody}>SUBMIT</span>
-			</button>
-		</section>
-	)
-}
+	&.fade-exit-active {
+		opacity: 0;
+		transition: opacity 200ms ease-in;
+	}
+`
 const starWrap = css`
 	width: 40px;
 	height: 40px;
@@ -166,11 +193,15 @@ const btn = css`
 	display: grid;
 	place-items: center;
 	place-content: center;
-	background-color: ${colors.orange};
+	background-color: ${colors.lightGrey};
 	${device.tablet} {
 		margin-top: 30px;
 	}
 `
+const activeBtn = css(btn, {
+	transition: 'background-color 0.2s ease-out',
+	backgroundColor: colors.orange
+})
 const btnBody = css`
 	color: ${colors.pureWhite};
 	font-size: ${rem(14)};
@@ -190,5 +221,20 @@ const error = css`
 	${device.tablet} {
 		font-size: ${rem(16)};
 	}
+	&.error-enter {
+		opacity: 0;
+	}
+	&.error-enter-active {
+		opacity: 1;
+		transition: opacity 0.2s ease-in;
+	}
+	&.error-exit {
+		opacity: 1;
+	}
+	&.error-exit-active {
+		opacity: 0;
+		transition: opacity 0.2s ease-out;
+	}
 `
+Rate.displayName = 'Rate'
 export default Rate
