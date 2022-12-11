@@ -1,10 +1,11 @@
+import { useEffect, useRef, useState } from 'react'
+import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import styled from 'styled-components'
 import './style/mixin'
 import { colors, device } from './style/variable.jsx'
 import { webfont } from './include/webfont.js'
-import { lazy, useEffect, useState } from 'react'
 import Rate from './components/Rate.jsx'
-const Thanks = lazy(() => import('./components/Thanks.jsx'))
+import Thanks from './components/Thanks.jsx'
 function App() {
 	useEffect(() => {
 		webfont()
@@ -12,20 +13,38 @@ function App() {
 	const rates = [1, 2, 3, 4, 5]
 	const [isSubmitted, setIsSubmitted] = useState(false)
 	const [value, setValue] = useState(null)
+	const thanksRef = useRef(null)
+	const rateRef = useRef(null)
+	const nodeRef = isSubmitted ? thanksRef : rateRef
 	return (
 		<SContainer>
 			<SMain>
 				<SCard>
-					{isSubmitted ? (
-						<Thanks value={value} />
-					) : (
-						<Rate
-							rates={rates}
-							setIsSubmitted={setIsSubmitted}
-							value={value}
-							setValue={setValue}
-						/>
-					)}
+					<SwitchTransition>
+						<CSSTransition
+							key={isSubmitted}
+							classNames="fade"
+							nodeRef={nodeRef}
+							timeout={300}
+						>
+							{isSubmitted ? (
+								<Thanks
+									value={value}
+									ref={thanksRef}
+									name="thanks"
+								/>
+							) : (
+								<Rate
+									rates={rates}
+									setIsSubmitted={setIsSubmitted}
+									value={value}
+									setValue={setValue}
+									ref={rateRef}
+									name="rate"
+								/>
+							)}
+						</CSSTransition>
+					</SwitchTransition>
 				</SCard>
 			</SMain>
 		</SContainer>
