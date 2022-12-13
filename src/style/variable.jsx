@@ -29,3 +29,5 @@ export const visuallyHidden = `
 	clip: rect(0 0 0 0);
 	overflow: hidden;
 `
+
+export const zIndexList = ['rateBg', 'rateBody',"btnBg","btnBody"]
