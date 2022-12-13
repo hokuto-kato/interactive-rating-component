@@ -13,8 +13,8 @@ function App() {
 	const rates = [1, 2, 3, 4, 5]
 	const [isSubmitted, setIsSubmitted] = useState(false)
 	const [value, setValue] = useState(null)
-	const thanksRef = useRef(null)
-	const rateRef = useRef(null)
+	const thanksRef = useRef()
+	const rateRef = useRef()
 	const nodeRef = isSubmitted ? thanksRef : rateRef
 	return (
 		<SContainer>

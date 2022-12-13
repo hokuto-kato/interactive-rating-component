@@ -1,39 +1,56 @@
-import { colors, device, visuallyHidden } from '../style/variable.jsx'
-import { rem } from '../style/mixin.jsx'
-import { forwardRef, useEffect, useRef, useState } from 'react'
+import { forwardRef, useRef, useState } from 'react'
 import { css } from '@emotion/react'
 import axios from 'axios'
 import { CSSTransition } from 'react-transition-group'
+import gsap from 'gsap'
+import { colors, device, visuallyHidden } from '../style/variable.jsx'
+import { rem, zIndex } from '../style/mixin.jsx'
 
 export const Rate = forwardRef(
 	({ rates, setIsSubmitted, value, setValue }, ref) => {
-		useEffect(() => {})
 		const [isValid, setIsValid] = useState(false)
 		const [isLoading, setIsLoading] = useState(false)
 		const [isError, setIsError] = useState(false)
 		const [errorMessage, setErrorMessage] = useState('')
-		const errorNode = useRef(null)
+		const errorNode = useRef()
+		const btnRef = useRef()
+		const tl = useRef()
+		const btnShake = () => {
+			tl.current = gsap.timeline()
+			.to(btnRef.current, {
+				x: -10,
+				duration: 0.05
+			})
+			.to(btnRef.current, {
+				x: 10,
+				duration: 0.05
+			})
+			.to(btnRef.current, {
+				x: 0,
+				duration: 0.05
+			})
+		}
 
 		const handleSubmit = () => {
 			if (isValid) {
 				setIsLoading(true)
 				axios
-					.post('https://jsonplaceholder.typicode.com/posts', value)
-					.then(() => {
-						setIsLoading(false)
-						setIsSubmitted(true)
-					})
-					.catch((err) => {
-						console.log(err.message)
-						setErrorMessage(`${err.message}.`)
-						setIsError(true)
-					})
-					.finally(() => {
-						setIsLoading(false)
-					})
+				.post('https://jsonplaceholder.typicode.com/posts', value)
+				.then(() => {
+					setIsLoading(false)
+					setIsSubmitted(true)
+				})
+				.catch((err) => {
+					setErrorMessage(`${err.message}.`)
+					setIsError(true)
+				})
+				.finally(() => {
+					setIsLoading(false)
+				})
 			} else {
-				setErrorMessage("You haven't rated yet.")
+				setErrorMessage('You haven\'t rated yet.')
 				setIsError(true)
+				btnShake()
 			}
 		}
 		const handleRadio = (e) => {
@@ -68,7 +85,9 @@ export const Rate = forwardRef(
 								onChange={handleRadio}
 							/>
 							<label css={label} htmlFor={`rate${rate}`}>
-								<span css={rateBody}>{rate}</span>
+								<span css={rateBody} className="rateBody">
+									{rate}
+								</span>
 							</label>
 						</li>
 					))}
@@ -84,8 +103,10 @@ export const Rate = forwardRef(
 						{errorMessage}
 					</p>
 				</CSSTransition>
-				<button css={isValid ? activeBtn : btn} onClick={handleSubmit}>
-					<span css={btnBody}>SUBMIT</span>
+				<button css={isValid
+					? activeBtn
+					: btn} onClick={handleSubmit} ref={btnRef}>
+					<span className="btnBody" css={btnBody}>SUBMIT</span>
 				</button>
 			</section>
 		)
@@ -155,23 +176,37 @@ const list = css`
 `
 const label = css`
 	background-color: ${colors.darkBlue};
-	width: 40px;
-	height: 40px;
 	display: grid;
 	place-items: center;
 	place-content: center;
 	border-radius: 100px;
+	position: relative;
+	width: 40px;
+	height: 40px;
+	overflow: hidden;
+	transform: scale(1);
+	transition: transform 0.3s cubic-bezier(0.23, 0.98, 0.62, 1.58),
+	background-color 0.3s ease-out;
 	${device.tablet} {
 		width: 50px;
 		height: 50px;
 	}
-}
+	@media (any-hover: hover) and (any-pointer: fine) {
+		&:hover {
+			transform: scale(1.1);
+			background-color: ${colors.orange};
+			.rateBody {
+				color: ${colors.pureWhite};
+			}
+		}
+	}
 `
 const rateBody = css`
 	color: ${colors.lightGrey};
 	font-size: ${rem(14)};
 	font-weight: bold;
 	transform: translateY(0.1rem);
+	transition: color 0.3s cubic-bezier(0.23, 0.98, 0.62, 1.58);
 	${device.tablet} {
 		font-size: ${rem(16)};
 	}
@@ -194,6 +229,33 @@ const btn = css`
 	place-items: center;
 	place-content: center;
 	background-color: ${colors.lightGrey};
+	position: relative;
+	overflow: hidden;
+	@media (any-hover: hover) and (any-pointer: fine) {
+		&:hover {
+			.btnBody {
+				color: ${colors.orange};
+			}
+			&:before {
+				transform: scaleX(1);
+				transform-origin: left;
+			}
+		}
+	}
+	&:before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		border-radius: 22.5px;
+		background-color: ${colors.pureWhite};
+		transform: scaleX(0);
+		transform-origin: right;
+		transition: transform 0.5s cubic-bezier(0.435, 0.25, 0.15, 0.965);
+		${zIndex('btnBg')}
+	}
 	${device.tablet} {
 		margin-top: 30px;
 	}
@@ -209,6 +271,8 @@ const btnBody = css`
 	letter-spacing: 2px;
 	line-height: normal;
 	transform: translateY(0.1rem);
+	${zIndex('btnBody')}
+	transition: color 0.5s cubic-bezier(0.435, 0.25, 0.15, 0.965);
 	${device.tablet} {
 		font-size: ${rem(15)};
 	}
