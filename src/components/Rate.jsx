@@ -1,54 +1,146 @@
-import { forwardRef, useRef, useState } from 'react'
+import { forwardRef, useLayoutEffect, useRef, useState } from 'react'
 import { css } from '@emotion/react'
 import axios from 'axios'
-import { CSSTransition } from 'react-transition-group'
-import gsap from 'gsap'
-import { colors, device, visuallyHidden } from '../style/variable.jsx'
-import { rem, zIndex } from '../style/mixin.jsx'
+import gsap, { Power4 } from 'gsap'
+import { colors, device, size, visuallyHidden } from '../style/variable.jsx'
+import { rem } from '../style/mixin.jsx'
+import Error from './Error.jsx'
+import { BsCheck } from 'react-icons/all'
 
 export const Rate = forwardRef(
-	({ rates, setIsSubmitted, value, setValue }, ref) => {
+	({ rates, setIsComplete, value, setValue }, ref) => {
 		const [isValid, setIsValid] = useState(false)
 		const [isLoading, setIsLoading] = useState(false)
+		const [isSubmitted, setIsSubmitted] = useState(false)
 		const [isError, setIsError] = useState(false)
 		const [errorMessage, setErrorMessage] = useState('')
-		const errorNode = useRef()
-		const btnRef = useRef()
-		const tl = useRef()
+		const btnRef = useRef(null)
+		const btnShakeTl = useRef(null)
+		const btnLoadingTl = useRef(null)
+		useLayoutEffect(() => {
+			btnLoadingTl.current = gsap.timeline()
+			const mm = gsap.matchMedia()
+			if (isLoading) {
+				btnLoadingTl.current.set(btnRef.current, {
+					cursor: 'default'
+				})
+				mm.add(`(min-width:${size.tablet})`, () => {
+					btnLoadingTl.current.to(btnRef.current, {
+						width: 45,
+						height: 45,
+						borderRadius: 22.5,
+						borderStyle: 'solid',
+						borderWidth: 3,
+						borderLeftColor: colors.orange,
+						borderTopColor: colors.lightGrey,
+						borderRightColor: colors.lightGrey,
+						borderBottomColor: colors.lightGrey,
+						backgroundColor: 'transparent',
+						duration: 0.5,
+						ease: Power4.easeOut
+					})
+				})
+				mm.add(`(max-width:${size.tablet})`, () => {
+					btnLoadingTl.current.to(btnRef.current, {
+						width: 40,
+						height: 40,
+						borderRadius: 20,
+						borderStyle: 'solid',
+						borderWidth: 3,
+						borderLeftColor: colors.orange,
+						borderTopColor: colors.lightGrey,
+						borderRightColor: colors.lightGrey,
+						borderBottomColor: colors.lightGrey,
+						backgroundColor: 'transparent',
+						duration: 0.5,
+						ease: Power4.easeOut
+					})
+				})
+				btnLoadingTl.current.to(
+					btnRef.current,
+					{
+						rotate: 360,
+						duration: 1.2,
+						repeat: -1,
+						ease: 'linear'
+					},
+					'-=0.2'
+				)
+			}
+			if (isSubmitted) {
+				btnLoadingTl.current.set(btnRef.current, {
+					cursor: 'default',
+					marginTop: 25
+				})
+				mm.add(`(min-width:${size.tablet})`, () => {
+					btnLoadingTl.current.set(btnRef.current, {
+						width: 50,
+						height: 50,
+						borderRadius: 25,
+						marginTop: 25
+					})
+				})
+				mm.add(`(max-width:${size.tablet})`, () => {
+					btnLoadingTl.current.set(btnRef.current, {
+						width: 40,
+						height: 40,
+						borderRadius: 20,
+						marginTop: 25
+					})
+				})
+				btnLoadingTl.current
+					.to(btnRef.current, {
+						backgroundColor: colors.orange,
+						duration: 0.5,
+						ease: Power4.easeOut
+					})
+					.add(() => {
+						setTimeout(() => {
+							setIsComplete(true)
+						}, 1000)
+					})
+			}
+			return () => btnLoadingTl.current.revert()
+		}, [isLoading, isSubmitted])
 		const btnShake = () => {
-			tl.current = gsap.timeline()
-			.to(btnRef.current, {
-				x: -10,
-				duration: 0.05
-			})
-			.to(btnRef.current, {
-				x: 10,
-				duration: 0.05
-			})
-			.to(btnRef.current, {
-				x: 0,
-				duration: 0.05
-			})
+			btnShakeTl.current = gsap
+				.timeline()
+				.to(btnRef.current, {
+					x: -10,
+					duration: 0.05
+				})
+				.to(btnRef.current, {
+					x: 10,
+					duration: 0.05
+				})
+				.to(btnRef.current, {
+					x: 0,
+					duration: 0.05
+				})
 		}
-
 		const handleSubmit = () => {
 			if (isValid) {
+				if (isLoading || isSubmitted) return
+				setIsError(false)
 				setIsLoading(true)
 				axios
-				.post('https://jsonplaceholder.typicode.com/posts', value)
-				.then(() => {
-					setIsLoading(false)
-					setIsSubmitted(true)
-				})
-				.catch((err) => {
-					setErrorMessage(`${err.message}.`)
-					setIsError(true)
-				})
-				.finally(() => {
-					setIsLoading(false)
-				})
+					.post(
+						'https://jsonplaceholder.typicode.com/posts?_delay=1000',
+						value
+					)
+					.then(() => {
+						setIsLoading(false)
+						setIsSubmitted(true)
+					})
+					.catch((err) => {
+						setErrorMessage(`${err.message}.`)
+						setIsError(true)
+					})
+					.finally(() => {
+						setIsLoading(false)
+					})
 			} else {
-				setErrorMessage('You haven\'t rated yet.')
+				setErrorMessage("You haven't rated yet.")
 				setIsError(true)
 				btnShake()
 			}
@@ -63,8 +155,21 @@ export const Rate = forwardRef(
 				id
 			}))
 		}
+		const BtnBody = () => {
+			if (!isLoading && !isSubmitted) {
+				return (
+					<>
+						<span className="btnBody" css={btnBody}>
+							SUBMIT
+						</span>
+					</>
+				)
+			} else if (isSubmitted) {
+				return <BsCheck css={check} />
+			}
+		}
 		return (
-			<section css={fade} ref={ref}>
+			<section css={section} ref={ref}>
 				<figure css={starWrap}>
 					<span css={starBody} role="img" aria-label="star"></span>
 				</figure>
@@ -83,6 +188,7 @@ export const Rate = forwardRef(
 								name="rate"
 								value={rate}
 								onChange={handleRadio}
+								disabled={isLoading}
 							/>
 							<label css={label} htmlFor={`rate${rate}`}>
 								<span css={rateBody} className="rateBody">
@@ -92,33 +198,25 @@ export const Rate = forwardRef(
 						</li>
 					))}
 				</ul>
-				<CSSTransition
-					nodeRef={errorNode}
-					timeout={200}
-					in={isError}
-					classNames="error"
-					unmountOnExit
+				<Error isError={isError} errorMessage={errorMessage} />
+				<button
+					css={btn(isValid, isLoading, isSubmitted)}
+					onClick={handleSubmit}
+					ref={btnRef}
 				>
-					<p css={error} ref={errorNode}>
-						{errorMessage}
-					</p>
-				</CSSTransition>
-				<button css={isValid
-					? activeBtn
-					: btn} onClick={handleSubmit} ref={btnRef}>
-					<span className="btnBody" css={btnBody}>SUBMIT</span>
+					<BtnBody />
 				</button>
 			</section>
 		)
 	}
 )
-const fade = css`
+const section = css`
+	transition: opacity 1s ease-in;
 	&.fade-exit {
 		opacity: 1;
 	}
 	&.fade-exit-active {
 		opacity: 0;
-		transition: opacity 200ms ease-in;
 	}
 `
 const starWrap = css`
@@ -186,7 +284,7 @@ const label = css`
 	overflow: hidden;
 	transform: scale(1);
 	transition: transform 0.3s cubic-bezier(0.23, 0.98, 0.62, 1.58),
-	background-color 0.3s ease-out;
+		background-color 0.3s ease-out;
 	${device.tablet} {
 		width: 50px;
 		height: 50px;
@@ -220,50 +318,40 @@ const input = css`
 		color: ${colors.pureWhite};
 	}
 `
-const btn = css`
-	margin-top: 25px;
+const btnBase = css`
+	margin: 25px auto 0;
 	width: 100%;
-	min-height: 45px;
+	height: 45px;
 	border-radius: 22.5px;
 	display: grid;
 	place-items: center;
 	place-content: center;
 	background-color: ${colors.lightGrey};
-	position: relative;
-	overflow: hidden;
-	@media (any-hover: hover) and (any-pointer: fine) {
-		&:hover {
-			.btnBody {
-				color: ${colors.orange};
-			}
-			&:before {
-				transform: scaleX(1);
-				transform-origin: left;
-			}
-		}
-	}
-	&:before {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		border-radius: 22.5px;
-		background-color: ${colors.pureWhite};
-		transform: scaleX(0);
-		transform-origin: right;
-		transition: transform 0.5s cubic-bezier(0.435, 0.25, 0.15, 0.965);
-		${zIndex('btnBg')}
-	}
+	transition: 0.2s ease-out;
+	transition-property: background-color, color;
 	${device.tablet} {
 		margin-top: 30px;
 	}
+	@media (any-hover: hover) and (any-pointer: fine) {
+		&:hover {
+			background-color: ${colors.pureWhite};
+			.btnBody {
+				color: ${colors.orange};
+			}
+		}
+	}
 `
-const activeBtn = css(btn, {
-	transition: 'background-color 0.2s ease-out',
-	backgroundColor: colors.orange
-})
+const btn = (isValid) => {
+	if (isValid) {
+		return css`
+			${btnBase};
+			background-color: ${colors.orange};
+		`
+	}
+	return css`
+		${btnBase};
+	`
+}
 const btnBody = css`
 	color: ${colors.pureWhite};
 	font-size: ${rem(14)};
@@ -271,34 +359,13 @@ const btnBody = css`
 	letter-spacing: 2px;
 	line-height: normal;
 	transform: translateY(0.1rem);
-	${zIndex('btnBody')}
 	transition: color 0.5s cubic-bezier(0.435, 0.25, 0.15, 0.965);
-	${device.tablet} {
-		font-size: ${rem(15)};
-	}
+	margin: 0 auto;
 `
-const error = css`
-	color: ${colors.burntSienna};
-	margin-top: 30px;
-	text-align: center;
-	font-size: ${rem(14)};
-	${device.tablet} {
-		font-size: ${rem(16)};
-	}
-	&.error-enter {
-		opacity: 0;
-	}
-	&.error-enter-active {
-		opacity: 1;
-		transition: opacity 0.2s ease-in;
-	}
-	&.error-exit {
-		opacity: 1;
-	}
-	&.error-exit-active {
-		opacity: 0;
-		transition: opacity 0.2s ease-out;
-	}
+const check = css`
+	color: ${colors.pureWhite};
+	font-size: ${rem(25)};
 `
+
 Rate.displayName = 'Rate'
 export default Rate
