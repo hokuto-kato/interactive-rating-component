@@ -1,68 +1,63 @@
-import { useEffect, useRef, useState } from 'react'
-import { CSSTransition, SwitchTransition } from 'react-transition-group'
-import styled from 'styled-components'
+import { useEffect, useState, useRef } from 'react'
+import { css } from '@emotion/react'
 import './style/mixin'
 import { colors, device } from './style/variable.jsx'
 import { webfont } from './include/webfont.js'
 import Rate from './components/Rate.jsx'
 import Thanks from './components/Thanks.jsx'
+import { SwitchTransition, CSSTransition } from 'react-transition-group'
 function App() {
 	useEffect(() => {
 		webfont()
 	})
 	const rates = [1, 2, 3, 4, 5]
-	const [isSubmitted, setIsSubmitted] = useState(false)
+	const [isComplete, setIsComplete] = useState(false)
 	const [value, setValue] = useState(null)
-	const thanksRef = useRef()
-	const rateRef = useRef()
-	const nodeRef = isSubmitted ? thanksRef : rateRef
+	const thanksRef = useRef(null)
+	const rateRef = useRef(null)
+	const nodeRef = isComplete ? thanksRef : rateRef
 	return (
-		<SContainer>
-			<SMain>
-				<SCard>
+		<div css={container}>
+			<main css={main}>
+				<div css={card}>
 					<SwitchTransition>
 						<CSSTransition
-							key={isSubmitted}
-							classNames="fade"
+							key={isComplete}
 							nodeRef={nodeRef}
-							timeout={300}
+							timeout={0}
+							classNames="fade"
 						>
-							{isSubmitted ? (
-								<Thanks
-									value={value}
-									ref={thanksRef}
-									name="thanks"
-								/>
+							{isComplete ? (
+								<Thanks value={value} ref={thanksRef} />
 							) : (
 								<Rate
 									rates={rates}
-									setIsSubmitted={setIsSubmitted}
+									setIsComplete={setIsComplete}
 									value={value}
 									setValue={setValue}
 									ref={rateRef}
-									name="rate"
 								/>
 							)}
 						</CSSTransition>
 					</SwitchTransition>
-				</SCard>
-			</SMain>
-		</SContainer>
+				</div>
+			</main>
+		</div>
 	)
 }
-const SContainer = styled.div`
+const container = css`
 	height: 100dvh;
 	display: grid;
 	place-items: center;
 	place-content: center;
 `
-const SMain = styled.main`
+const main = css`
 	padding: 0 25px;
 	width: 100%;
 	display: grid;
 	place-items: center;
 `
-const SCard = styled.div`
+const card = css`
 	padding: 25px 25px 30px;
 	border-radius: 15px;
 	background-image: radial-gradient(
