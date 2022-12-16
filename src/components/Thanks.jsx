@@ -31,12 +31,12 @@ export const Thanks = forwardRef(({ value }, ref) => {
 const section = css`
 	text-align: center;
 	padding: 15px 0;
+	transition: opacity 1s ease-out;
 	&.fade-enter {
 		opacity: 0;
 	}
 	&.fade-enter-active {
 		opacity: 1;
-		transition: opacity 0.2s ease-out;
 	}
 `
 const img = css`
