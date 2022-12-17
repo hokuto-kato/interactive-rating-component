@@ -5,27 +5,23 @@ import { forwardRef } from 'react'
 
 export const Thanks = forwardRef(({ value }, ref) => {
 	return (
-		<>
-			<section css={section} ref={ref}>
-				<figure>
-					<span
-						css={img}
-						role="img"
-						aria-label="data submitted image"
-					></span>
-				</figure>
-				<p css={info}>
-					<span css={infoBody}>
-						You selected {value.rate} out of 5
-					</span>
-				</p>
-				<h1 css={heading}>Thank you!</h1>
-				<p css={body}>
-					We appreciate you taking the time to give a rating. If you
-					ever need more support, don’t hesitate to get in touch!
-				</p>
-			</section>
-		</>
+		<section css={section} ref={ref}>
+			<figure>
+				<span
+					css={img}
+					role="img"
+					aria-label="data submitted image"
+				></span>
+			</figure>
+			<p css={info}>
+				<span css={infoBody}>You selected {value.rate} out of 5</span>
+			</p>
+			<h1 css={heading}>Thank you!</h1>
+			<p css={body}>
+				We appreciate you taking the time to give a rating. If you ever
+				need more support, don’t hesitate to get in touch!
+			</p>
+		</section>
 	)
 })
 const section = css`
@@ -62,7 +58,7 @@ const info = css`
 	}
 `
 const infoBody = css`
-	transform: translateY(1px);
+	transform: translateY(2px);
 	display: inline-block;
 	line-height: 1.57;
 	font-size: ${rem(14)};

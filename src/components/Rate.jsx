@@ -15,11 +15,13 @@ export const Rate = forwardRef(
 
 		return (
 			<section css={section} ref={ref}>
-				<figure css={starWrap}>
+				<figure css={starWrap} data-fade-up="">
 					<span css={starBody} role="img" aria-label="star"></span>
 				</figure>
-				<h1 css={heading}>How did we do?</h1>
-				<p css={body}>
+				<h1 css={heading} data-fade-up="">
+					How did we do?
+				</h1>
+				<p css={body} data-fade-up="">
 					Please let us know how we did with your support request. All
 					feedback is appreciated to help us improve our offering!
 				</p>
