@@ -1,1 +1,13 @@
 @use "destyle.css"
+@use "./variable" as *
+
+html
+	font-family: 'Overpass', sans-serif
+	visibility: hidden
+	-webkit-font-smoothing: antialiased
+	-moz-osx-font-smoothing: grayscale
+	&.wf-inactive,
+	&.wf-active
+		visibility: visible
+body
+	background-color: $very-darkblue
