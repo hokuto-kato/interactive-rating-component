@@ -2,11 +2,11 @@ import { BsCheck } from 'react-icons/bs'
 import { css } from '@emotion/react'
 import { colors, device, size } from '../style/variable.jsx'
 import { rem } from '../style/mixin.jsx'
-import { useLayoutEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import gsap, { Power4 } from 'gsap'
 import axios from 'axios'
 
-const Button = ({
+const SubmitButton = ({
 	isLoading,
 	isSubmitted,
 	isValid,
@@ -20,7 +20,7 @@ const Button = ({
 	const btnRef = useRef(null)
 	const btnShakeTl = useRef(null)
 	const btnLoadingTl = useRef(null)
-	useLayoutEffect(() => {
+	useEffect(() => {
 		btnLoadingTl.current = gsap.timeline()
 		const mm = gsap.matchMedia()
 		if (isLoading) {
@@ -174,7 +174,7 @@ const Button = ({
 		</>
 	)
 }
-export default Button
+export default SubmitButton
 
 const btnBase = css`
 	margin: 25px auto 0;
