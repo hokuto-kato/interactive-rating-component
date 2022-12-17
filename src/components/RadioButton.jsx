@@ -5,9 +5,9 @@ import { rem } from '../style/mixin.jsx'
 const RadioButton = ({ isLoading, setIsValid, setIsError, setValue }) => {
 	const rates = [1, 2, 3, 4, 5]
 	const handleRadio = (e) => {
+		const id = Math.floor(Math.random() * 1e3)
 		setIsValid(true)
 		setIsError(false)
-		const id = Math.floor(Math.random() * 1e3)
 		setValue((prev) => ({
 			...prev,
 			[e.target.name]: e.target.value,
@@ -17,7 +17,7 @@ const RadioButton = ({ isLoading, setIsValid, setIsError, setValue }) => {
 	return (
 		<ul css={list}>
 			{rates.map((rate) => (
-				<li key={rate}>
+				<li key={rate} data-fade-up="">
 					<input
 						css={input}
 						id={`rate${rate}`}

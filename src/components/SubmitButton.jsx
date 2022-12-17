@@ -168,6 +168,7 @@ const SubmitButton = ({
 				css={btn(isValid, isLoading, isSubmitted)}
 				onClick={handleSubmit}
 				ref={btnRef}
+				data-fade-up=""
 			>
 				<BtnBody />
 			</button>
