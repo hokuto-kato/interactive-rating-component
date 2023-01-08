@@ -4,7 +4,6 @@ import { colors, device } from '../style/variable.jsx'
 import { rem } from '../style/mixin.jsx'
 import { useLayoutEffect, useRef } from 'react'
 import gsap, { Power4 } from 'gsap'
-
 const Error = ({ isError, errorMessage }) => {
 	const errorRef = useRef(null)
 	useLayoutEffect(() => {
@@ -34,7 +33,6 @@ const Error = ({ isError, errorMessage }) => {
 		</>
 	)
 }
-
 const error = css`
 	margin-top: 30px;
 	text-align: center;
@@ -57,5 +55,4 @@ const errorBody = css`
 		font-size: ${rem(15)};
 	}
 `
-
 export default Error
