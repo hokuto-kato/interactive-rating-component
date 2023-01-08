@@ -9,7 +9,7 @@
 	</p>
 	<p>
 		<a href="https://interactive-rating-component-three-ebon.vercel.app/">View Demo</a> ·
-		<a href="#"> View on frontend mentor</a>
+		<a href="https://www.frontendmentor.io/solutions/interactive-rating-component-cKj6fywkkW"> View on frontend mentor</a>
 	</p>
 	<p>
 		<img src="./assets/img_preview.jpg" alt="Interactive rating component" style="width: 100%;">
