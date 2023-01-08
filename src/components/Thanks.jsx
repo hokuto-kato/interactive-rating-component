@@ -2,8 +2,7 @@ import { colors, device } from '../style/variable.jsx'
 import { rem } from '../style/mixin.jsx'
 import { css } from '@emotion/react'
 import { forwardRef } from 'react'
-
-export const Thanks = forwardRef(({ value }, ref) => {
+const Thanks = forwardRef(({ value }, ref) => {
 	return (
 		<section css={section} ref={ref}>
 			<figure>
@@ -87,6 +86,5 @@ const body = css`
 		font-size: ${rem(15)};
 	}
 `
-
 Thanks.displayName = 'Thanks'
 export default Thanks

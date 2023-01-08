@@ -1,7 +1,6 @@
 import { css } from '@emotion/react'
 import { colors, device, visuallyHidden } from '../style/variable.jsx'
 import { rem } from '../style/mixin.jsx'
-
 const RadioButton = ({ isLoading, setIsValid, setIsError, setValue }) => {
 	const rates = [1, 2, 3, 4, 5]
 	const handleRadio = (e) => {
@@ -37,7 +36,6 @@ const RadioButton = ({ isLoading, setIsValid, setIsError, setValue }) => {
 		</ul>
 	)
 }
-
 const list = css`
 	margin-top: 24px;
 	display: grid;
@@ -94,5 +92,4 @@ const input = css`
 		color: ${colors.pureWhite};
 	}
 `
-
 export default RadioButton
