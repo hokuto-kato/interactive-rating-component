@@ -9,7 +9,7 @@
 	</p>
 	<p>
 		<a href="https://interactive-rating-component-three-ebon.vercel.app/">View Demo</a> ·
-		<a href="#"> View on frontend mentor</a>
+		<a href="https://www.frontendmentor.io/solutions/interactive-rating-component-cKj6fywkkW"> View on frontend mentor</a>
 	</p>
 	<p>
 		<img src="./assets/img_preview.jpg" alt="Interactive rating component" style="width: 100%;">
@@ -31,7 +31,7 @@
 
 ### What I learned
 
--   React
+-   React Basics
 -   CSS-in-JS
 -   setting constants and mixins for applying styles
 -   ajax post request, error handling, loading animation
@@ -70,3 +70,5 @@
 -   gsap on react
     -   [Getting Started with GSAP + React.](https://greensock.com/react)
     -   [GSAP + React, Advanced Animation Techniques.](https://greensock.com/react-advanced)
+-   animation reference
+    -   [The Future of Car Servicing is Here | SPARQ](https://www.joinsparq.com/)

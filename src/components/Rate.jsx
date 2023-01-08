@@ -5,14 +5,13 @@ import { rem } from '../style/mixin.jsx'
 import Error from './Error.jsx'
 import SubmitButton from './SubmitButton.jsx'
 import RadioButton from './RadioButton.jsx'
-export const Rate = forwardRef(
+const Rate = forwardRef(
 	({ rates, setIsComplete, cardBgRef, value, setValue }, ref) => {
 		const [isValid, setIsValid] = useState(false)
 		const [isLoading, setIsLoading] = useState(false)
 		const [isSubmitted, setIsSubmitted] = useState(false)
 		const [isError, setIsError] = useState(false)
 		const [errorMessage, setErrorMessage] = useState('')
-
 		return (
 			<section css={section} ref={ref}>
 				<figure css={starWrap} data-fade-up="">
@@ -99,6 +98,5 @@ const body = css`
 		margin-top: 7px;
 	}
 `
-
 Rate.displayName = 'Rate'
 export default Rate

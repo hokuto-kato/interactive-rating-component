@@ -1,11 +1,9 @@
-import { BsCheck } from 'react-icons/bs'
 import { css } from '@emotion/react'
 import { colors, device, size } from '../style/variable.jsx'
-import { rem } from '../style/mixin.jsx'
 import { useEffect, useRef } from 'react'
 import gsap, { Power4 } from 'gsap'
 import axios from 'axios'
-
+import BtnBody from './BtnBody.jsx'
 const SubmitButton = ({
 	isLoading,
 	isSubmitted,
@@ -148,20 +146,6 @@ const SubmitButton = ({
 			btnShake()
 		}
 	}
-
-	const BtnBody = () => {
-		if (!isLoading && !isSubmitted) {
-			return (
-				<>
-					<span className="btnBody" css={btnBody}>
-						SUBMIT
-					</span>
-				</>
-			)
-		} else if (isSubmitted) {
-			return <BsCheck css={check} />
-		}
-	}
 	return (
 		<>
 			<button
@@ -170,13 +154,11 @@ const SubmitButton = ({
 				ref={btnRef}
 				data-fade-up=""
 			>
-				<BtnBody />
+				<BtnBody isLoading={isLoading} isSubmitted={isSubmitted} />
 			</button>
 		</>
 	)
 }
-export default SubmitButton
-
 const btnBase = css`
 	margin: 25px auto 0;
 	width: 100%;
@@ -211,17 +193,4 @@ const btn = (isValid) => {
 		${btnBase};
 	`
 }
-const btnBody = css`
-	color: ${colors.pureWhite};
-	font-size: ${rem(14)};
-	font-weight: bold;
-	letter-spacing: 2px;
-	line-height: normal;
-	transform: translateY(0.1rem);
-	transition: color 0.5s cubic-bezier(0.435, 0.25, 0.15, 0.965);
-	margin: 0 auto;
-`
-const check = css`
-	color: ${colors.pureWhite};
-	font-size: ${rem(25)};
-`
+export default SubmitButton
